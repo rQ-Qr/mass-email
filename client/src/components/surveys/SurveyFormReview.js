@@ -6,7 +6,12 @@ import formFields from './formFields';
 import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
+// onCancel: click to move back to SurveyForm
+// formValues: fields values
+// submitSurvey: action creator
+// history: used as router
 const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
+  // create fields for review
   const reviewFields = _.map(formFields, ({ name, label }) => {
     return (
       <div key={name}>
@@ -29,6 +34,7 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
       >
         Back
       </button>
+      {/* once click, call the action creator */}
       <button
         onClick={() => submitSurvey(formValues, history)}
         className="green btn-flat right white-text"
@@ -39,9 +45,9 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
     </div>
   );
 };
-
+// get values of fields from state as props
 function mapStateToProps(state) {
   return { formValues: state.form.surveyForm.values };
 }
-
+// withRouter is used to implement the router
 export default connect(mapStateToProps, actions)(withRouter(SurveyFormReview));

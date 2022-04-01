@@ -12,8 +12,13 @@ import reducers from './reducers';
 import axios from 'axios';
 window.axios = axios;
 
+// create the store to store all states
+// and apply the 'reduxThunk' middleware
 const store = createStore(reducers, {}, applyMiddleware(reduxThunk));
 
+// boot up the App component
+// Provider tag is above the App component and contain the 'store'
+// Porvider is used to inform the App the changes of states
 ReactDOM.render(
   <Provider store={store}><App /></Provider>,
   document.querySelector('#root')

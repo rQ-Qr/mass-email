@@ -6,7 +6,9 @@ const Dashboard = () => {
   return (
     <div>
       <SurveyList />
+      {/* this is the 'add' button with materialize CSS */}
       <div className="fixed-action-btn">
+        {/* using link tag for router in the server */}
         <Link to="/surveys/new" className="btn-floating btn-large red">
           <i className="material-icons">add</i>
         </Link>

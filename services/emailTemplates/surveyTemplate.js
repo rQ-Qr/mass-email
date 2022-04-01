@@ -1,6 +1,7 @@
 const keys = require('../../config/keys');
 
 module.exports = survey => {
+  // return the survey template that is showed to recipients
   return `
     <html>
       <body>

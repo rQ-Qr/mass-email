@@ -1,6 +1,8 @@
 const passport = require('passport');
 
 module.exports = app => {
+
+  // request the user authentication to google
   app.get(
     '/auth/google',
     passport.authenticate('google', {
@@ -8,6 +10,8 @@ module.exports = app => {
     })
   );
 
+  // require user details from google and
+  // redirect the url with user details to /surveys
   app.get(
     '/auth/google/callback',
     passport.authenticate('google'),
@@ -16,6 +20,7 @@ module.exports = app => {
     }
   );
 
+  // logout
   app.get('/api/logout', (req, res) => {
     req.logout();
     res.redirect("/");

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Payments from './Payments';
 
 class Header extends Component {
-
+  // according to the result of auth function, show different contents
   renderContent() {
     switch (this.props.auth) {
       case null:
@@ -43,6 +43,7 @@ class Header extends Component {
   }
 }
 
+// add the auth function of reducers in state as one of props in the Component
 function mapStateToProps({ auth }) {
   return { auth };
 }
