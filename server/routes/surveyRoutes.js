@@ -36,14 +36,65 @@ module.exports = app => {
     });
 
     app.post('/api/surveys/webhooks', (req, res) => {
+        console.log("webhooks body is " + req.body);
+        console.log("req is type of : ")
+        console.log(typeof (req));
+
         //need to add receiving req here.
-        /*if (req.is('text/*')) {
-           req.body = JSON.parse(req.body)
-           if (req.body.SubscribeURL) {
-               got(req.body.SubscribeURL)
-               return res.end()
-           }
-       }
+        if (req.is('text/*')) {
+            const resp = JSON.parse(req.body)
+            console.log("webhooks resp is " + resp);
+            if (resp.SubscribeURL) {
+                superagent.get(resp.SubscribeURL).end((err, res) => {
+                    if (err) {
+                        console.error(new Date(), `Error at subscription: ${err.name}`);
+                        //res.sendStatus(500);
+                    } else {
+                        console.log(new Date(), `success to subscribe`);
+                        //res.sendStatus(200);
+                    }
+                });
+            }
+            const message = JSON.parse(resp.Message);
+            const p = new Path('/api/surveys/:surveyId/:choice');
+            // use the chain() function to deal with paths
+            const event = _.chain(message)
+                .map(({mail, click}) => {
+                    let email = message.mail.destination[0];
+                    // extract the surveyId and choice form path
+                    const match = p.test(new URL(message.click.link).pathname);
+                    //console.log("match found: " + match.surveyId);
+                    //console.log("match found: " + match.choice);
+                    if (match) {
+                        return {email, surveyId: match.surveyId, choice: match.choice};
+                    }
+                })
+                // remove undefined empty object
+                .compact()
+                // remove repeated object
+                .uniqBy('email', 'surveyId')
+                .each(({surveyId, email, choice}) => {
+                    Survey.updateOne(
+                        {
+                            _id: surveyId,
+                            recipients: {
+                                $elemMatch: {email: email, responded: false}
+                            }
+                        },
+                        {
+                            $inc: {[choice]: 1},
+                            $set: {'recipients.$.responded': true},
+                            lastResponded: new Date()
+                        }
+                    ).exec();
+                })
+                .value();
+
+            res.send({});
+        }
+    });
+
+
         //console.log("------------------------------------------------------------------------");
         const resp = {
             "Type": "SubscriptionConfirmation",
@@ -58,7 +109,7 @@ module.exports = app => {
             "SigningCertURL": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-7ff5318490ec183fbaddaa2a969abfda.pem"
         }
 //confirm subscription
-        if (resp.SubscribeURL) {
+        /*if (resp.SubscribeURL) {
             superagent.get(resp.SubscribeURL).end((err, res) => {
                 if (err) {
                     console.error(new Date(), `Error at subscription: ${err.name}`);
@@ -96,7 +147,7 @@ module.exports = app => {
             "UnsubscribeURL": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:769091347911:Emaily:ce9888d0-a19a-4b8b-92d8-022e657fbb0c"
         }
 
-        const message = JSON.parse(notifi.Message);
+       /* const message = JSON.parse(notifi.Message);
         //console.log(message.mail.destination[0]);  **parse destination
         //console.log(message.click.link); **parse link clicked
         //return res.end()
@@ -138,7 +189,7 @@ module.exports = app => {
             .value();
 
         res.send({});
-    });
+    });*/
 
 
     // first check if login by requireLogin middleware
@@ -178,4 +229,5 @@ module.exports = app => {
         }
 
     });
+
 };
