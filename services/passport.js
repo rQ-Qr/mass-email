@@ -1,5 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
@@ -22,25 +23,12 @@ passport.deserializeUser((id, done) => {
 // configure the GoogleStrategy
 // and if succeed, execute the async function to load or create user
 passport.use(
-  new GoogleStrategy(
-    {
-      clientID: keys.googleClientID,
-      clientSecret: keys.googleClientSecret,
-      callbackURL: '/auth/google/callback',
-      proxy: true
-    },
-    async (accessToken, refreshToken, profile, done) => {
-        const existingUser = await User.findOne({ googleId : profile.id });
-        if(existingUser) {
-          // we already have a record with the given profile ID
-          done(null, existingUser);
-        }
-        else {
-          // we don't have a user record with this ID, make a new record
-          const user = new User({ googleId: profile.id }).save();
-          done(null, user);
-        }
-        // the done function is used to send the user to passport.serializeUser
+  new LocalStrategy(async function verify(username, password, done) {
+    const existingUser = await User.findOne({ googleId : "103805923715121791269" });
+    if(existingUser) {
+      // we already have a record with the given profile ID
+      done(null, existingUser);
+      console.log("done");
     }
-  )
+  })
 );
