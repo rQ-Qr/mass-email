@@ -5,14 +5,7 @@ module.exports = app => {
   // request the user authentication to google
   app.post(
     '/auth/google',
-    passport.authenticate('local', {
-      successReturnToOrRedirect: '/auth/google/callback',
-      failureMessage: true
-    }),
-    (req, res) => {
-      console.log("hhhhh");
-      res.redirect('/auth/google/callback');
-    }
+    passport.authenticate('local')
   );
 
   app.get(
@@ -21,7 +14,6 @@ module.exports = app => {
       res.redirect('/surveys');
     }
   );
-
 
   // logout
   app.get('/api/logout', (req, res) => {

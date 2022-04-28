@@ -12,7 +12,7 @@ class Header extends Component {
         return;
       case false:
         return (
-          <li><a onClick={login}>Login</a></li>
+          <li><a href="/surveys" onClick={login}>Login</a></li>
         );
       default:
         return [
