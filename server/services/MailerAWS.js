@@ -4,8 +4,8 @@ const Mailer = require("./Mailer");
 const surveyTemplate = require("./emailTemplates/surveyTemplate");
 const bodyParser = require('body-parser')
 const ses = new aws.SES({
-    accessKeyId: ,
-    secretAccessKey: ,
+    accessKeyId: "AKIA3GELKUXDYJZGUSR6",
+    secretAccessKey: "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" ,
     region: "us-west-2"
 });
 
