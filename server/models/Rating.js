@@ -1,11 +1,12 @@
-const dynamoose = require('dynamoose');
-const { Schema } = dynamoose;
+const dynamooseclient = require('./dynamooseclient');
+
 
 // create a new model class
-const ratingSchema = new Schema({
+const ratingSchema = new dynamooseclient.Schema({
   "ratingId": String,
   "rating": String
 });
 
 // load the new schema to mongoose
-module.exports =  dynamoose.model('rating', ratingSchema);
+const ratingModel = dynamooseclient.model('Ratings', ratingSchema);
+export default ratingModel;
