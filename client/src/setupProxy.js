@@ -9,8 +9,8 @@ module.exports = function (app) {
     ["/api", "/auth/google"],
     createProxyMiddleware({
 //      target: "http://host.docker.internal:5000",
-      target: "http://localhost:5000",
-//      target: "http://ec2-44-203-217-157.compute-1.amazonaws.com:5000",
+//     target: "http://localhost:5000",
+      target: "http://ec2-44-203-217-157.compute-1.amazonaws.com:5000",
       secure: false,
     })
   );
