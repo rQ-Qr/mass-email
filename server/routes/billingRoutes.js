@@ -1,7 +1,6 @@
 const keys = require('../config/keys');
 const stripe = require('stripe')(keys.stripeSecretKey);
 const requireLogin = require('../middlewares/requireLogin');
-const dynamooseclient = require('../models/dynamooseclient');
 const ratingModel = require('../models/Rating');
 
 module.exports = app => {

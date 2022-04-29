@@ -9,4 +9,4 @@ const ratingSchema = new dynamooseclient.Schema({
 
 // load the new schema to mongoose
 const ratingModel = dynamooseclient.model('Ratings', ratingSchema);
-export default ratingModel;
+module.exports = ratingModel;
