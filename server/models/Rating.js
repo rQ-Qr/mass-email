@@ -8,4 +8,4 @@ const ratingSchema = new Schema({
 });
 
 // load the new schema to mongoose
-dynamoose.model('rating', ratingSchema);
+module.exports =  dynamoose.model('rating', ratingSchema);
