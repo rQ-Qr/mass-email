@@ -7,4 +7,4 @@ dynamoose.aws.sdk.config.update({
     "region": "us-east-1"
 });
 
-module.exports = dynamooseclient;
+module.exports = dynamoose;
