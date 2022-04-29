@@ -28,14 +28,3 @@ module.exports = app => {
     res.send(user);
   });
 };
-
-
-const survey = new Rating({
-  title,
-  subject,
-  body,
-  // split the recipients and store as an object
-  recipients: recipients.split(',').map(email => ({email: email.trim()})),
-  _user: req.user.id,
-  dateSent: Date.now()
-});
