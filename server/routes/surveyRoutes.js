@@ -84,6 +84,10 @@ module.exports = app => {
                         surveyIdtemp = surveyId;
                         emailtemp = email;
                         choiceTemp = choice;
+                        surveyDDBModel.update({"id": surveyIdtemp}, 
+                {recipients: [{"email": emailtemp, "responded": true}]},
+                {"$ADD":{"yes": 1}}, 
+                {"lastResponded": new Date()});
                         // surveyDDBModel.update({"id": surveyId}, 
                         // {recipients: [{"email": email, "responded": true}]},
                         //  {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
@@ -118,10 +122,7 @@ module.exports = app => {
             }
         }
 
-        await surveyDDBModel.update({"id": surveyIdtemp}, 
-                {recipients: [{"email": emailtemp, "responded": true}]},
-                {"$ADD":{choiceTemp: 1}}, 
-                {"lastResponded": new Date()});
+        
     });
 
 
