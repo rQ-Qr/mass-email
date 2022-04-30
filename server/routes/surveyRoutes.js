@@ -77,9 +77,15 @@ module.exports = app => {
                     // remove repeated object
                     .uniqBy('email', 'surveyId')
                     .each(({surveyId, email, choice}) => {
-                        await surveyDDBModel.update({"id": surveyId}, 
+                        surveyDDBModel.update({"id": surveyId}, 
                         {recipients: [{"email": email, "responded": true}]},
-                         {"$ADD":{choice: 1}}, {"lastResponded": new Date()});
+                         {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
+                             if (error) {
+                                 console.error(error);
+                             } else {
+                                 console.log("saved updated survey: ", surveyresult);
+                             }
+                         });
 
                         
                         
