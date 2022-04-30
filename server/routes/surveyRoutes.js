@@ -43,7 +43,7 @@ module.exports = app => {
         res.send('Thanks for voting!');
     });
 
-    app.post('/api/surveys/webhooks', (req, res) => {
+    app.post('/api/surveys/webhooks', async (req, res) => {
         let surveyIdtemp = "";
         let emailtemp = "";
         let choiceTemp = "";
@@ -84,7 +84,7 @@ module.exports = app => {
                         surveyIdtemp = surveyId;
                         emailtemp = email;
                         choiceTemp = choice;
-                        surveyDDBModel.update({"id": surveyIdtemp}, 
+                        await surveyDDBModel.update({"id": surveyIdtemp}, 
                 {recipients: [{"email": emailtemp, "responded": true}]},
                 {"$ADD":{"yes": 1}}, 
                 {"lastResponded": new Date()});
