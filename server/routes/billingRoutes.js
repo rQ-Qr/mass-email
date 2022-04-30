@@ -1,8 +1,7 @@
 const keys = require('../config/keys');
 const stripe = require('stripe')(keys.stripeSecretKey);
 const requireLogin = require('../middlewares/requireLogin');
-// const ratingModel = require('../models/Rating');
-const dynamooseclient = require('../models/dynamooseclient');
+const ratingModel = require('../models/Rating');
 
 module.exports = app => {
   // first check if login by requireLogin middleware
@@ -19,8 +18,7 @@ module.exports = app => {
     // save the data to mongoDB and get persisted
     const user = await req.user.save();
     console.log("Starting processing rating....")
-    const Rating = dynamooseclient.model('Ratings');
-    const rating = new Rating({
+    const rating = new ratingModel({
       "ratingId": "testratingid",
       "rating": "excellent"
     })
