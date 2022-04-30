@@ -10,6 +10,7 @@ const MailerAWS = require("../services/MailerAWS");
 const bodyParser = require('body-parser')
 const superagent = require('superagent');
 const Survey = mongoose.model('surveys');
+const surveyDDBModel = require('../models/SurveyDDB');
 
 module.exports = app => {
     app.use(bodyParser.urlencoded({extended: true}))
@@ -17,8 +18,6 @@ module.exports = app => {
 
     app.get('/api/surveys', requireLogin, async (req, res) => {
         console.log("survey existing user's id: ", req.user.id);
-        console.log("survey existing user's id type: ", typeof(req.user.id));
-        console.log("survey existing user's id str: ", req.user.id.str);
         const surveys = await Survey.find({_user: req.user.id}).select({
             recipients: false
         });
@@ -206,6 +205,20 @@ module.exports = app => {
             dateSent: Date.now()
         });
 
+        console.log("Building surveyDDB...");
+        const surveyDDB = new surveyDDBModel({
+            "id": "624f8d65876bcc4ed0d5582c",
+            "title": title,
+            "subject": subject,
+            "body": body,
+            "recipients": recipients.split(',').map(email => ({email: email.trim()})),
+            "_user": req.user.id,
+            dateSent: Date.now()
+            
+        });
+        console.log("Writing to ddb...");
+        await surveyDDB.save();
+        console.log("Writing to ddb finished")
         // Great place to send an email!
         // create a new mailer
         const mailer = new Mailer(survey, surveyTemplate(survey));
