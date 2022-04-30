@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const {Path} = require('path-parser');
 const {URL} = require('url');
-const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
 const Mailer = require('../services/Mailer');
@@ -9,7 +8,6 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const MailerAWS = require("../services/MailerAWS");
 const bodyParser = require('body-parser')
 const superagent = require('superagent');
-const Survey = mongoose.model('surveys');
 const surveyDDBModel = require('../models/SurveyDDB');
 
 module.exports = app => {
@@ -17,15 +15,7 @@ module.exports = app => {
     app.use(bodyParser.text());
 
     app.get('/api/surveys', requireLogin, async (req, res) => {
-        console.log("survey existing user's id: ", req.user.id);
-        const surveys = await Survey.find({_user: req.user.id}).select({
-            recipients: false
-        });
-
-        console.log("Startting scanning line 20")
         const surveysDDB = await surveyDDBModel.scan("_user").eq(req.user.id).attributes(["title", "body", "subject", "recipients", "yes", "no", "_user", "dateSent", "lastResponded"]).exec();
-        console.log("Scanning successful line 22")
-
 
         console.log("surveysDDB: ", surveysDDB);
         res.send(surveysDDB);
@@ -44,9 +34,6 @@ module.exports = app => {
     });
 
     app.post('/api/surveys/webhooks', async (req, res) => {
-        let surveyIdtemp = "";
-        let emailtemp = "";
-        let choiceTemp = "";
         if (req.is('text/*')) {
             const resp = JSON.parse(req.body);
             //console.log(resp.SubscribeURL);
@@ -79,40 +66,14 @@ module.exports = app => {
                     .compact()
                     // remove repeated object
                     .uniqBy('email', 'surveyId')
-                    .each(({surveyId, email, choice}) => {
-
-                        surveyIdtemp = surveyId;
-                        emailtemp = email;
-                        choiceTemp = choice;
-                        await surveyDDBModel.update({"id": surveyIdtemp}, 
-                {recipients: [{"email": emailtemp, "responded": true}]},
-                {"$ADD":{"yes": 1}}, 
-                {"lastResponded": new Date()});
-                        // surveyDDBModel.update({"id": surveyId}, 
-                        // {recipients: [{"email": email, "responded": true}]},
-                        //  {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
-                        //      if (error) {
-                        //          console.error(error);
-                        //      } else {
-                        //          console.log("saved updated survey: ", surveyresult);
-                        //      }
-                        //  });
-
-                        
-                        
-                        // Survey.updateOne(
-                        //     {
-                        //         _id: surveyId,
-                        //         recipients: {
-                        //             $elemMatch: {email: email, responded: false}
-                        //         }
-                        //     },
-                        //     {
-                        //         $inc: {[choice]: 1},
-                        //         $set: {'recipients.$.responded': true},
-                        //         lastResponded: new Date()
-                        //     }
-                        // ).exec();
+                    .each(async ({surveyId, email, choice}) => {
+                        updateChoice = {};
+                        updateChoice[choice] = 1;
+                        await surveyDDBModel.update({"id": surveyId}, {
+                            recipients: [{"email": email, "responded": true}],
+                            "$ADD": updateChoice,
+                            lastResponded: new Date()
+                        });
                     })
                     .value();
 
@@ -227,19 +188,7 @@ module.exports = app => {
     app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
         // extract data
         const {title, subject, body, recipients} = req.body;
-        // create a new instance for mongoDB
-        const survey = new Survey({
-            title,
-            subject,
-            body,
-            // split the recipients and store as an object
-            recipients: recipients.split(',').map(email => ({email: email.trim()})),
-            _user: req.user.id,
-            dateSent: Date.now()
-        });
-
-        console.log("Building surveyDDB...");
-        console.log("Building surveyDDB recipients: ", recipients);
+        // create a new instance for dynamoDB
         const surveyDDB = new surveyDDBModel({
             "id": "824f8d65876bcc4ed0d5582c",
             "title": title,
@@ -248,7 +197,6 @@ module.exports = app => {
             "recipients": recipients.split(',').map(email => ({"email": email.trim()})),
             "_user": req.user.id,
             dateSent: Date.now()
-            
         });
 
         // Great place to send an email!
@@ -259,11 +207,8 @@ module.exports = app => {
             // send the mailer to sendGrid
             // await mailer.send();
             await MailerAWS(surveyDDB, surveyTemplate(surveyDDB), "blithe2021@gmail.com");
-            // store the data to mongoDB
-            // await survey.save();
-            console.log("Writing to ddb...");
+            // store the data to dynamoDB
             await surveyDDB.save();
-            console.log("Writing to ddb finished")
             // update the credit
             req.user.credits -= 1;
             // save the updated user data

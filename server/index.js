@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
@@ -7,12 +6,6 @@ const keys = require('./config/keys');
 require('./models/User');
 require('./models/Survey');
 require('./services/passport');
-
-mongoose.connect(keys.mongoURI, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-  });
 
 // create a new application
 const app = express();

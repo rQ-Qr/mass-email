@@ -1,7 +1,6 @@
 const keys = require('../config/keys');
 const stripe = require('stripe')(keys.stripeSecretKey);
 const requireLogin = require('../middlewares/requireLogin');
-const ratingModel = require('../models/Rating');
 
 module.exports = app => {
   // first check if login by requireLogin middleware
@@ -15,15 +14,8 @@ module.exports = app => {
     });
     // add the credit
     req.user.credits += 5;
-    // save the data to mongoDB and get persisted
+    // save the data to dynamoDB and get persisted
     const user = await req.user.save();
-    console.log("Starting processing rating....")
-    const rating = new ratingModel({
-      "ratingId": "testratingid",
-      "rating": "excellent"
-    })
-    const ratinginstance = await rating.save();
-    console.log("Rating saved to ddb: ", ratinginstance.rating)
     // return the updated user data
     res.send(user);
   });
