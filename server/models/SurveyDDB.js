@@ -8,7 +8,7 @@ const surveyDDBSchema = new dynamooseclient.Schema({
   "body": String,
   "subject": String,
   // refer to RecipientDDBSchema
-  "recipients": [RecipientDDBSchema],
+  "recipients": {"type": Array, "schema": [RecipientDDBSchema]},
   "yes": { "type": Number, "default": 0 },
   "no": { "type": Number, "default": 0 },
   // refer to user id
@@ -17,8 +17,7 @@ const surveyDDBSchema = new dynamooseclient.Schema({
   "lastResponded": Date
 });
 
-// load the new schema to mongoose
-mongoose.model('surveys', surveySchema);
-// load the new schema to mongoose
+
+// load the new schema to dynamoose
 const surveyDDBModel = dynamooseclient.model('surveys', surveyDDBSchema);
 module.exports = surveyDDBModel;

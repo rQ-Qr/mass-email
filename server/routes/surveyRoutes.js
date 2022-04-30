@@ -206,12 +206,13 @@ module.exports = app => {
         });
 
         console.log("Building surveyDDB...");
+        console.log("Building surveyDDB recipients: ", recipients);
         const surveyDDB = new surveyDDBModel({
             "id": "624f8d65876bcc4ed0d5582c",
             "title": title,
             "subject": subject,
             "body": body,
-            "recipients": recipients.split(',').map(email => ({email: email.trim()})),
+            "recipients": recipients.split(',').map(email => ({"email": email.trim()})),
             "_user": req.user.id,
             dateSent: Date.now()
             
