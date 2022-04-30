@@ -58,6 +58,9 @@ module.exports = app => {
                     }
                 });
             } else {
+                let surveyIdtemp = "";
+                let emailtemp = "";
+                let choiceTemp = "";
                 const message = JSON.parse(resp.Message);
                 const p = new Path('/api/surveys/:surveyId/:choice');
                 // use the chain() function to deal with paths
@@ -77,15 +80,19 @@ module.exports = app => {
                     // remove repeated object
                     .uniqBy('email', 'surveyId')
                     .each(({surveyId, email, choice}) => {
-                        surveyDDBModel.update({"id": surveyId}, 
-                        {recipients: [{"email": email, "responded": true}]},
-                         {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
-                             if (error) {
-                                 console.error(error);
-                             } else {
-                                 console.log("saved updated survey: ", surveyresult);
-                             }
-                         });
+
+                        surveyIdtemp = surveyId;
+                        emailtemp = email;
+                        choiceTemp = choice;
+                        // surveyDDBModel.update({"id": surveyId}, 
+                        // {recipients: [{"email": email, "responded": true}]},
+                        //  {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
+                        //      if (error) {
+                        //          console.error(error);
+                        //      } else {
+                        //          console.log("saved updated survey: ", surveyresult);
+                        //      }
+                        //  });
 
                         
                         
@@ -104,6 +111,18 @@ module.exports = app => {
                         // ).exec();
                     })
                     .value();
+
+                surveyDDBModel.update({"id": surveyIdtemp}, 
+                {recipients: [{"email": emailtemp, "responded": true}]},
+                {"$ADD":{choiceTemp: 1}}, 
+                {"lastResponded": new Date()},
+                (error, surveyresult) => {
+                        if (error) {
+                            console.error(error);
+                        } else {
+                            console.log("saved updated survey: ", surveyresult);
+                        }
+                    });
                 console.log("end")
                 res.send({});
             }
