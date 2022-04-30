@@ -23,7 +23,7 @@ module.exports = app => {
         });
 
         console.log("Startting scanning line 20")
-        const surveysDDB = await Survey.scan("_user").eq(req.user.id).attributes(["title", "body", "subject", "recipients", "yes", "no", "_user", "dateSent", "lastResponded"]).exec();
+        const surveysDDB = await surveyDDBModel.scan("_user").eq(req.user.id).attributes(["title", "body", "subject", "recipients", "yes", "no", "_user", "dateSent", "lastResponded"]).exec();
         console.log("Scanning successful line 22")
 
 
@@ -77,19 +77,25 @@ module.exports = app => {
                     // remove repeated object
                     .uniqBy('email', 'surveyId')
                     .each(({surveyId, email, choice}) => {
-                        Survey.updateOne(
-                            {
-                                _id: surveyId,
-                                recipients: {
-                                    $elemMatch: {email: email, responded: false}
-                                }
-                            },
-                            {
-                                $inc: {[choice]: 1},
-                                $set: {'recipients.$.responded': true},
-                                lastResponded: new Date()
-                            }
-                        ).exec();
+                        await surveyDDBModel.update({"id": surveyId}, 
+                        {recipients: [{"email": email, "responded": true}]},
+                         {"$ADD":{choice: 1}}, {"lastResponded": new Date()});
+
+                        
+                        
+                        // Survey.updateOne(
+                        //     {
+                        //         _id: surveyId,
+                        //         recipients: {
+                        //             $elemMatch: {email: email, responded: false}
+                        //         }
+                        //     },
+                        //     {
+                        //         $inc: {[choice]: 1},
+                        //         $set: {'recipients.$.responded': true},
+                        //         lastResponded: new Date()
+                        //     }
+                        // ).exec();
                     })
                     .value();
                 console.log("end")
@@ -214,7 +220,7 @@ module.exports = app => {
         console.log("Building surveyDDB...");
         console.log("Building surveyDDB recipients: ", recipients);
         const surveyDDB = new surveyDDBModel({
-            "id": "624f8d65876bcc4ed0d5582c",
+            "id": "824f8d65876bcc4ed0d5582c",
             "title": title,
             "subject": subject,
             "body": body,
@@ -223,19 +229,20 @@ module.exports = app => {
             dateSent: Date.now()
             
         });
-        console.log("Writing to ddb...");
-        await surveyDDB.save();
-        console.log("Writing to ddb finished")
+
         // Great place to send an email!
         // create a new mailer
-        const mailer = new Mailer(survey, surveyTemplate(survey));
+        const mailer = new Mailer(surveyDDB, surveyTemplate(surveyDDB));
 
         try {
             // send the mailer to sendGrid
             // await mailer.send();
-            await MailerAWS(survey, surveyTemplate(survey), "blithe2021@gmail.com");
+            await MailerAWS(surveyDDB, surveyTemplate(surveyDDB), "blithe2021@gmail.com");
             // store the data to mongoDB
-            await survey.save();
+            // await survey.save();
+            console.log("Writing to ddb...");
+            await surveyDDB.save();
+            console.log("Writing to ddb finished")
             // update the credit
             req.user.credits -= 1;
             // save the updated user data
