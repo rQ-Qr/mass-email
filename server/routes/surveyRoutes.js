@@ -22,7 +22,13 @@ module.exports = app => {
             recipients: false
         });
 
-        res.send(surveys);
+        console.log("Startting scanning line 20")
+        const surveysDDB = await Survey.scan("_user").eq(req.user.id).attributes(["title", "body", "subject", "recipients", "yes", "no", "_user", "dateSent", "lastResponded"]).exec();
+        console.log("Scanning successful line 22")
+
+
+        console.log("surveysDDB: ", surveysDDB);
+        res.send(surveysDDB);
     });
 
     // after clicking the options, redirect to the 'thanks' page
