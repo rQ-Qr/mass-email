@@ -2,6 +2,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalStrategy = require('passport-local');
 const mongoose = require('mongoose');
+const userDDBModel = require('../models/UserDDB');
 const keys = require('../config/keys');
 
 // get the model class
@@ -25,6 +26,14 @@ passport.deserializeUser((id, done) => {
 passport.use(
   new LocalStrategy(async function verify(username, password, done) {
     const existingUser = await User.findOne({ googleId : "103805923715121791269" });
+    console.log("mongodb is finished line 29");
+    console.log("ddb processing starting line 20");
+
+    const esistingUserFromDDB = await userDDBModel.get({"googleId": "103805923715121791269"});
+
+    console.log("ddb processing done and get user googleid: ", esistingUserFromDDB.googleId);
+
+
     if(existingUser) {
       // we already have a record with the given profile ID
       done(null, existingUser);
