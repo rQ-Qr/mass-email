@@ -29,7 +29,8 @@ passport.use(
     console.log("mongodb is finished line 29");
     console.log("ddb processing starting line 20");
 
-    const esistingUserFromDDB = await userDDBModel.get({"googleId": "103805923715121791269"});
+    // const esistingUserFromDDB = await userDDBModel.get({"googleId": "103805923715121791269"});
+    const esistingUserFromDDB = await userDDBModel.scan("googleId").eq("103805923715121791269").exec();
 
     console.log("ddb processing done and get user googleid: ", esistingUserFromDDB.googleId);
 
