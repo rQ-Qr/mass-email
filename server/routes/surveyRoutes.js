@@ -9,6 +9,7 @@ const MailerAWS = require("../services/MailerAWS");
 const bodyParser = require('body-parser')
 const superagent = require('superagent');
 const surveyDDBModel = require('../models/SurveyDDB');
+const { randomUUID } = require('crypto');
 
 module.exports = app => {
     app.use(bodyParser.urlencoded({extended: true}))
@@ -17,7 +18,6 @@ module.exports = app => {
     app.get('/api/surveys', requireLogin, async (req, res) => {
         const surveysDDB = await surveyDDBModel.scan("_user").eq(req.user.id).attributes(["title", "body", "subject", "recipients", "yes", "no", "_user", "dateSent", "lastResponded"]).exec();
 
-        console.log("surveysDDB: ", surveysDDB);
         res.send(surveysDDB);
     });
 
@@ -190,7 +190,7 @@ module.exports = app => {
         const {title, subject, body, recipients} = req.body;
         // create a new instance for dynamoDB
         const surveyDDB = new surveyDDBModel({
-            "id": "824f8d65876bcc4ed0d5582c",
+            "id": randomUUID(),
             "title": title,
             "subject": subject,
             "body": body,

@@ -12,7 +12,6 @@ passport.serializeUser((user, done) => {
 // take out the user id from session
 passport.deserializeUser((id, done) => {
   userDDBModel.get({"id": id}).then(user => {
-    console.log("line 19 user: ", user);
     done(null, user);
   });
 });
