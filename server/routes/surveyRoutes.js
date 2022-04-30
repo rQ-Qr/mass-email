@@ -44,6 +44,9 @@ module.exports = app => {
     });
 
     app.post('/api/surveys/webhooks', (req, res) => {
+        let surveyIdtemp = "";
+        let emailtemp = "";
+        let choiceTemp = "";
         if (req.is('text/*')) {
             const resp = JSON.parse(req.body);
             //console.log(resp.SubscribeURL);
@@ -58,9 +61,6 @@ module.exports = app => {
                     }
                 });
             } else {
-                let surveyIdtemp = "";
-                let emailtemp = "";
-                let choiceTemp = "";
                 const message = JSON.parse(resp.Message);
                 const p = new Path('/api/surveys/:surveyId/:choice');
                 // use the chain() function to deal with paths
@@ -112,21 +112,16 @@ module.exports = app => {
                     })
                     .value();
 
-                surveyDDBModel.update({"id": surveyIdtemp}, 
-                {recipients: [{"email": emailtemp, "responded": true}]},
-                {"$ADD":{choiceTemp: 1}}, 
-                {"lastResponded": new Date()},
-                (error, surveyresult) => {
-                        if (error) {
-                            console.error(error);
-                        } else {
-                            console.log("saved updated survey: ", surveyresult);
-                        }
-                    });
+                
                 console.log("end")
                 res.send({});
             }
         }
+
+        await surveyDDBModel.update({"id": surveyIdtemp}, 
+                {recipients: [{"email": emailtemp, "responded": true}]},
+                {"$ADD":{choiceTemp: 1}}, 
+                {"lastResponded": new Date()});
     });
 
 
