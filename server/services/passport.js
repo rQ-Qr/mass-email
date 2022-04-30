@@ -30,10 +30,15 @@ passport.use(
     console.log("ddb processing starting line 20");
 
     // const esistingUserFromDDB = await userDDBModel.get({"googleId": "103805923715121791269"});
-    const esistingUserFromDDB = await userDDBModel.scan("googleId").eq("103805923715121791269").exec();
+    // const esistingUserFromDDB = await userDDBModel.scan("googleId").eq("103805923715121791269").exec();
 
-    console.log("ddb processing done and get user googleid: ", esistingUserFromDDB.googleId);
+    // console.log("ddb processing done and get user googleid: ", esistingUserFromDDB[0].googleId);
 
+    console.log("existing user's id type: ", typeof(existingUser.id));
+    console.log("existing user's id in mongodb: ", existingUser.id.str);
+    const existingUserMongo = User.findById(existingUser.id);
+    console.log("existing user's id type in mongodb: ", typeof(existingUserMongo.id));
+    console.log("existing user's id type in mongodbbbb: ", typeof(mongoose.Types.ObjectId(existingUser.id.str).str));
 
     if(existingUser) {
       // we already have a record with the given profile ID
