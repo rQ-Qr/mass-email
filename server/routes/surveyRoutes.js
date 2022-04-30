@@ -16,6 +16,9 @@ module.exports = app => {
     app.use(bodyParser.text());
 
     app.get('/api/surveys', requireLogin, async (req, res) => {
+        console.log("survey existing user's id: ", req.user.id);
+        console.log("survey existing user's id type: ", typeof(req.user.id));
+        console.log("survey existing user's id str: ", req.user.id.str);
         const surveys = await Survey.find({_user: req.user.id}).select({
             recipients: false
         });

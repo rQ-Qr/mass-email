@@ -35,10 +35,9 @@ passport.use(
     // console.log("ddb processing done and get user googleid: ", esistingUserFromDDB[0].googleId);
 
     console.log("existing user's id type: ", typeof(existingUser.id));
-    console.log("existing user's id in mongodb: ", existingUser.id.str);
-    const existingUserMongo = User.findById(existingUser.id);
-    console.log("existing user's id type in mongodb: ", typeof(existingUserMongo.id));
-    console.log("existing user's id type in mongodbbbb: ", typeof(mongoose.Types.ObjectId(existingUser.id.str).str));
+    console.log("existing user's id in mongodb: ", existingUser.id);
+    const existingUserMongo = await User.findById(existingUser.id);
+    console.log("existing user's id type in mongodbbbb: ", typeof(mongoose.Types.ObjectId(existingUser.id)));
 
     if(existingUser) {
       // we already have a record with the given profile ID
