@@ -79,7 +79,13 @@ module.exports = app => {
                     .each(({surveyId, email, choice}) => {
                         surveyDDBModel.update({"id": surveyId}, 
                         {recipients: [{"email": email, "responded": true}]},
-                         {"$ADD":{"yes": 1}}, {"lastResponded": new Date()}).exec();
+                         {"$ADD":{choice: 1}}, {"lastResponded": new Date()}, (error, surveyresult) => {
+                             if (error) {
+                                 console.error(error);
+                             } else {
+                                 console.log("saved updated survey: ", surveyresult);
+                             }
+                         });
 
                         
                         
