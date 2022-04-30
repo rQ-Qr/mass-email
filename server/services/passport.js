@@ -15,11 +15,10 @@ passport.serializeUser((user, done) => {
 
 // take out the user id from session
 passport.deserializeUser((id, done) => {
-  const esistingUserFromDDB = await userDDBModel.get({"id": id});
-  if(esistingUserFromDDB) {
-    console.log("line 20 user: ", esistingUserFromDDB)
-    done(null, esistingUserFromDDB);
-  }
+  userDDBModel.get({"id": id}).then(user => {
+    console.log("line 19 user: ", user);
+    done(null, user);
+  });
 
   // User.findById(id).then(user => {
   //   done(null, user);
