@@ -14,7 +14,7 @@ module.exports = app => {
     });
     // add the credit
     req.user.credits += 5;
-    // save the data to mongoDB and get persisted
+    // save the data to dynamoDB and get persisted
     const user = await req.user.save();
     // return the updated user data
     res.send(user);
