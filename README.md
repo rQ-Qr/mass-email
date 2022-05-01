@@ -21,6 +21,19 @@ docker-compose up (wait until no new messages pop up)
 control + C
 
 
+How to run our project on EC2 instance ec2forProject:
+
+1. SSH to access EC2 instance
+
+2. Go to both AWS/client and AWS/server to run the project
+
+The command to run our application on EC2 instance ec2forProject is:
+cd AWS/client
+pm2 start --name client npm -- start
+cd AWS/server
+pm2 start index.js --name server
+
+
 How to send email and receive click event notification using AWS SES and SNS：
 
 1. Create a user in IAM with full access to AWS SES, replace ‘accessKeyId’ and ‘secretAccessKey’ in the code with the new credential(MailerAWS.js,)
