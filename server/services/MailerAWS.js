@@ -42,7 +42,6 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
 module.exports = MailerAWS;
 
 
-<<<<<<< HEAD
 /*const params = {
     ConfigurationSetName:"Emailly",
     Destination:{
@@ -124,6 +123,3 @@ console.log("");
 mailerAWS.send(params)*/
 
 
-
-=======
->>>>>>> 017d8c19b42b6d6a26c9dad98d8ebcb0c80ca13e
