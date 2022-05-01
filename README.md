@@ -1,9 +1,9 @@
-1. 用SSH 进入EC2 instance
+1. SSH to access EC2 instance
 2. Start docker service:
 sudo service docker start
 sudo usermod -a -G docker ec2-user
 
-3. 进入route file
+3. enter the path of route file
 cd AWS-main/server/routes/
 
 4. open and edit surveyRoutes.js and save changes:
