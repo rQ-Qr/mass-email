@@ -1,11 +1,8 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const LocalStrategy = require('passport-local');
-const mongoose = require('mongoose');
+const userDDBModel = require('../models/UserDDB');
 const keys = require('../config/keys');
-
-// get the model class
-const User = mongoose.model('users');
 
 // store the data to session
 passport.serializeUser((user, done) => {
@@ -14,7 +11,7 @@ passport.serializeUser((user, done) => {
 
 // take out the user id from session
 passport.deserializeUser((id, done) => {
-  User.findById(id).then(user => {
+  userDDBModel.get({"id": id}).then(user => {
     done(null, user);
   });
 });
@@ -24,10 +21,12 @@ passport.deserializeUser((id, done) => {
 // and if succeed, execute the async function to load or create user
 passport.use(
   new LocalStrategy(async function verify(username, password, done) {
-    const existingUser = await User.findOne({ googleId : "103805923715121791269" });
-    if(existingUser) {
+    
+    const esistingUserFromDDB = await userDDBModel.scan("googleId").eq("103805923715121791269").exec();
+
+    if(esistingUserFromDDB[0]) {
       // we already have a record with the given profile ID
-      done(null, existingUser);
+      done(null, esistingUserFromDDB[0]);
       console.log("done");
     }
   })

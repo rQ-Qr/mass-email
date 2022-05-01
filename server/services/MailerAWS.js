@@ -4,8 +4,13 @@ const Mailer = require("./Mailer");
 const surveyTemplate = require("./emailTemplates/surveyTemplate");
 const bodyParser = require('body-parser')
 const ses = new aws.SES({
+<<<<<<< HEAD
     accessKeyId: "",
     secretAccessKey: "",
+=======
+    accessKeyId: "AKIA37R6MPLKLB2KGXTH",
+    secretAccessKey: "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",
+>>>>>>> 017d8c19b42b6d6a26c9dad98d8ebcb0c80ca13e
     region: "us-east-1"
 });
 
@@ -18,25 +23,12 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
         const params = {
             ConfigurationSetName: "SurveyEmail",
             Destination: {
-                ToAddresses: arr//["sophiaff88@yahoo.com", "hello@yahoo.com"]
+                ToAddresses: arr
             },
             Message: {
                 Body: {
                     Html: {
                         Data: emailBody
-                        /*"<div style=\"text-align: center;\">" +
-                        "<h3>I'd like your input!</h3>" +
-                        "<p>Please answer the following question:</p>" +
-                        "<p>Do you like our product?</p>" +
-                        "<div>" +
-                        "<a href=\"${keys.redirectDomain}/api/surveys/${survey.id}/yes\">Yes</a>" +
-                        "</div>" +
-                        "</div>" +
-                        "<div style=\"text-align: center;\">" +
-                        "<a href=\"${keys.redirectDomain}/api/surveys/${survey.id}/no\">No</a>" +
-                        //"<a href={{no_link}}>Yes</a>" +
-                        "</div>" +
-                        "</div>"*/
                     }
                 },
                 Subject: {
@@ -45,7 +37,6 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
             },
             Source: sender
         };
-        //console.log("in awsmailer params html:  " + params.Message.Body.Html.Data.toString())
         ses.sendEmail(params, function (err, data) {
             if (err) console.log(err, err.stack);
             else console.log(data);
@@ -56,6 +47,7 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
 module.exports = MailerAWS;
 
 
+<<<<<<< HEAD
 /*const params = {
     ConfigurationSetName:"Emailly",
     Destination:{
@@ -138,3 +130,5 @@ mailerAWS.send(params)*/
 
 
 
+=======
+>>>>>>> 017d8c19b42b6d6a26c9dad98d8ebcb0c80ca13e
