@@ -4,13 +4,13 @@ module.exports = function (app) {
   // redirct the request of port 3000 from browser to port 5000
   
   // There is a proxy in create-react-app, receive request from browser and
-  // redirct it to server.
+  // redirect it to server.
   app.use(
     ["/api", "/auth/google"],
     createProxyMiddleware({
 //      target: "http://host.docker.internal:5000",
 //     target: "http://localhost:5000",
-      target: "http://ec2-44-203-217-157.compute-1.amazonaws.com:5000",
+      target: "http://ec2-18-207-63-121.compute-1.amazonaws.com:5000",
       secure: false,
     })
   );
