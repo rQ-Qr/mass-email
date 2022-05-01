@@ -20,6 +20,7 @@ docker-compose up (wait until no new messages pop up)
 7. stop the docker-compose:
 control + C
 
+
 How to send email and receive click event notification using AWS SES and SNS：
 
 1. Create a user in IAM with full access to AWS SES, replace ‘accessKeyId’ and ‘secretAccessKey’ in the code with the new credential(MailerAWS.js,)
