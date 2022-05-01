@@ -6,5 +6,5 @@ module.exports = {
   stripePublishableKey: 'pk_test_51JHx6ZDKqmY1dRHPxCOmKKfg3nMv8j5brJDHcmEK6UCEVKYAsLyOOo2hRkvN8vWgBkbDp0xIzdQQFZFQ8Ogg7vwe00Uj1o2LWj',
   stripeSecretKey: 'sk_test_51JHx6ZDKqmY1dRHPdynMu9gxIrbgMeQ6QTveddJfOYBYt4RBqnz0imgxvgxMmXkvAsFgJ7dLuwiWrdMsrM29OVAI00RP8iejnh',
   sendGridKey: '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',
-  redirectDomain: 'http://localhost:3000'
+  redirectDomain: 'http://ec2-18-207-63-121.compute-1.amazonaws.com:3000'
 }

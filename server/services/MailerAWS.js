@@ -4,9 +4,9 @@ const Mailer = require("./Mailer");
 const surveyTemplate = require("./emailTemplates/surveyTemplate");
 const bodyParser = require('body-parser')
 const ses = new aws.SES({
-    accessKeyId: ,
-    secretAccessKey:  ,
-    region: "us-west-2"
+    accessKeyId: "",
+    secretAccessKey: "",
+    region: "us-east-1"
 });
 
 function MailerAWS({subject, recipients}, emailBody, sender) {
@@ -16,7 +16,7 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
     for (var index = 0; index < toAddress.length; index++) {
         var arr = [toAddress[index]];
         const params = {
-            ConfigurationSetName: "Emailly",
+            ConfigurationSetName: "SurveyEmail",
             Destination: {
                 ToAddresses: arr//["sophiaff88@yahoo.com", "hello@yahoo.com"]
             },
@@ -135,3 +135,6 @@ const params = {
 
 console.log("");
 mailerAWS.send(params)*/
+
+
+
