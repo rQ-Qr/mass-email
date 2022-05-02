@@ -4,8 +4,8 @@ const Mailer = require("./Mailer");
 const surveyTemplate = require("./emailTemplates/surveyTemplate");
 const bodyParser = require('body-parser')
 const ses = new aws.SES({
-    accessKeyId: "",
-    secretAccessKey: "",
+    accessKeyId: "please contact Fang Fang to get accessKeyId",
+    secretAccessKey: "please contact Fang Fang to get secretAccessKey",
     region: "us-east-1"
 });
 
@@ -40,6 +40,3 @@ function MailerAWS({subject, recipients}, emailBody, sender) {
 }
 
 module.exports = MailerAWS;
-
-
-
